@@ -9,12 +9,7 @@ from utils import load_yaml, project_paths
 
 
 def select_generation_records(records, cfg):
-    """Select the deterministic prefix used for building the shared generation cache.
 
-    This is intentionally different from online method runs. Method runs sample
-    batches with replacement, while data generation uses the first max_samples
-    examples so the cache is easy to inspect and extend.
-    """
     data_cfg = cfg["data"]
     max_samples = data_cfg.get("max_samples", data_cfg.get("max_examples", None))
 

@@ -7,24 +7,7 @@ import numpy as np
 
 
 class Qwen3ScoreModel:
-    """Frozen Qwen3 encoder used as features for ``method: ours``.
 
-    The class exposes the same interface as ``MiniLMScoreModel``:
-
-        encode_rows(rows) -> np.ndarray
-
-    It loads a Qwen3 causal language model *without* the language-model head via
-    ``transformers.AutoModel`` and converts each prompt--response pair into one
-    fixed-size vector. Decoder-only models do not have a dedicated [CLS] token,
-    so the default representation is the final non-padding token from the last
-    hidden layer. Inputs are terminated with the tokenizer EOS token and the
-    resulting vectors are L2-normalized by default.
-
-    This implementation is intended for the Qwen3 size ablation using the
-    frozen Qwen3 models 0.6B, 1.7B, and 4B. These are general Qwen3 language
-    models used as encoders; they are distinct from the separately released
-    Qwen3-Embedding model family.
-    """
 
     MODEL_ALIASES = {
         "0.6": "Qwen/Qwen3-0.6B",
@@ -114,8 +97,7 @@ class Qwen3ScoreModel:
             trust_remote_code=self.trust_remote_code,
         )
 
-        # Left padding makes last-token pooling efficient and unambiguous: the
-        # final position is always the final real token for every sequence.
+
         self.tokenizer.padding_side = str(self.cfg.get("padding_side", "left"))
         if self.tokenizer.pad_token_id is None:
             if self.tokenizer.eos_token_id is None:
@@ -186,8 +168,8 @@ class Qwen3ScoreModel:
 
         value = value.lower()
         if value == "auto":
-            # Let Transformers use the checkpoint dtype on CUDA. On CPU, use
-            # float32 for broad operator support.
+
+
             return "auto" if self.device.type == "cuda" else torch.float32
 
         mapping = {
@@ -241,9 +223,7 @@ class Qwen3ScoreModel:
         if not self.cache_embeddings:
             return self._encode_uncached(texts)
 
-        # Frozen encoders produce identical features for identical text. The
-        # online streams sample examples with replacement, so caching avoids
-        # repeatedly running a large Qwen model on the same interaction.
+
         missing = []
         seen_missing = set()
         for text in texts:
@@ -304,7 +284,7 @@ class Qwen3ScoreModel:
                 mask = attention_mask.unsqueeze(-1).to(hidden.dtype)
                 denominator = mask.sum(dim=1).clamp(min=1e-9)
                 features = (hidden * mask).sum(dim=1) / denominator
-            else:  # guarded in __init__
+            else:
                 raise ValueError(f"Unknown pooling: {self.pooling}")
 
             features = features.detach().float().cpu().numpy().astype(np.float32)
@@ -316,8 +296,8 @@ class Qwen3ScoreModel:
         return features.astype(np.float32)
 
     def _tokenize_batch(self, batch: List[str]):
-        # Reserve one position for EOS so last-token pooling always observes a
-        # consistent sequence terminator, even when an input is truncated.
+
+
         reserve_eos = self.append_eos and self.tokenizer.eos_token_id is not None
         content_max_length = self.max_length - 1 if reserve_eos else self.max_length
         content_max_length = max(1, content_max_length)
@@ -348,11 +328,11 @@ class Qwen3ScoreModel:
         )
 
     def _last_token_pool(self, last_hidden_state, attention_mask):
-        # For left-padded batches, the final position is always a real token.
+
         if bool((attention_mask[:, -1] == 1).all().item()):
             return last_hidden_state[:, -1]
 
-        # Fallback for right padding or custom tokenizers.
+
         sequence_lengths = attention_mask.sum(dim=1).clamp(min=1) - 1
         batch_indices = self.torch.arange(
             last_hidden_state.shape[0], device=last_hidden_state.device
@@ -366,4 +346,3 @@ class Qwen3ScoreModel:
                 self.torch.cuda.empty_cache()
         except Exception:
             pass
-

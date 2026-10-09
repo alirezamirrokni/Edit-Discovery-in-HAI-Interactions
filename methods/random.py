@@ -5,7 +5,7 @@ import pandas as pd
 
 
 class RandomSelection:
-    """Random budget-feasible selection baseline."""
+
 
     needs_score_model = False
 

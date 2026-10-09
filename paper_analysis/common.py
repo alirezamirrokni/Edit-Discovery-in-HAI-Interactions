@@ -82,12 +82,7 @@ def _best_file(paths: Iterable[Path]) -> Path | None:
 
 
 def locate_main_run_files(cfg: dict) -> Dict[str, Path]:
-    """Locate the canonical existing main-run CSVs without writing anything.
 
-    EDIT-REP is intentionally restricted to the MiniLM run so representation-
-    model ablations in the same output directory are never mixed into the main
-    table.
-    """
     out_dir = output_dir_from_config(cfg)
     if not out_dir.exists():
         raise FileNotFoundError(f"Missing output directory: {out_dir}")
@@ -119,14 +114,7 @@ def safe_div(num: float, den: float) -> float:
 
 
 def compute_metrics(run_df: pd.DataFrame) -> dict[str, float]:
-    """Compute paper Type-I/II plus complementary discovery metrics.
 
-    Type-I and Type-II follow the paper protocol exactly: first compute the
-    conditional rate inside each round, treating an empty denominator as zero,
-    then average the per-round rates over time.
-
-    Discovery metrics are pooled over all realized interactions in the run.
-    """
     required = {"t", "selected", "A", "cost"}
     missing = required.difference(run_df.columns)
     if missing:
@@ -220,7 +208,7 @@ def load_generation_pool(cfg: dict) -> pd.DataFrame:
 
 
 def stream_from_existing_run(run_csv: Path, generation_pool: pd.DataFrame) -> np.ndarray:
-    """Reconstruct the exact realized batch stream from an existing run CSV."""
+
     run = pd.read_csv(run_csv).sort_values(["t", "batch_pos"]).reset_index(drop=True)
     lookup = {
         int(example_id): i
@@ -253,7 +241,7 @@ def sample_stream(pool_size: int, seed: int, num_batches: int, batch_size: int) 
 
 
 class PrecomputedScoreModel:
-    """Minimal feature lookup interface consumed by :class:`OursSelection`."""
+
 
     def __init__(self, features: np.ndarray):
         self.features = np.asarray(features, dtype=np.float32)
@@ -319,7 +307,7 @@ def run_edit_rep_offline(
     epsilon: float,
     budget: float,
 ) -> pd.DataFrame:
-    """Run EDIT-REP on cached interactions only; no external API is used."""
+
     local_cfg = copy.deepcopy(cfg)
     local_cfg["seed"] = int(seed)
     local_cfg["policy"]["epsilon"] = float(epsilon)
@@ -341,7 +329,7 @@ def run_edit_rep_offline(
                 "pool_pos": pool_idx,
                 "example_id": group["example_id"].astype(int).to_numpy(),
                 "A": group["A"].astype(int).to_numpy(),
-                # The main-paper sweeps use the constant-cost setting.
+
                 "cost": np.ones(len(pool_idx), dtype=float),
             }
         )

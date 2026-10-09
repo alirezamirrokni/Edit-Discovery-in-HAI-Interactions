@@ -135,8 +135,7 @@ def _math_verify_parse(text: str):
     if not text:
         return []
 
-    # Math-Verify is most reliable when LaTeX is inside a math environment. We try the
-    # raw string first, then simple math-environment variants.
+
     variants = [
         text,
         f"${text}$",
@@ -174,12 +173,12 @@ def math_equal(a: str | None, b: str | None) -> bool:
     except Exception:
         pass
 
-    # Conservative fallback for formatting-only mismatches or simple numerics.
+
     return _fallback_equal(a, b)
 
 
 class Math500Wrapper:
-    """MATH-500 wrapper used by the active-selection experiments."""
+
 
     def __init__(self, cfg: Dict[str, Any]):
         self.cfg = cfg

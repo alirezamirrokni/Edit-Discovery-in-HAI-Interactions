@@ -1,7 +1,0 @@
-{
-  "config": "ours_random_llama-3.3-70b-versatile_mmlupro-test_n600_seed42_multishift_budget5_eps0p445_alpha0p1_seed7",
-  "next_batch": 200,
-  "method_state": {
-    "alpha": 0.8783333333333329
-  }
-}

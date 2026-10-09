@@ -1,7 +1,0 @@
-{
-  "config": "ours_random_llama-3.3-70b-versatile_popqa-test_n500_seed42_budget5_eps0p175_alpha0p1_seed7",
-  "next_batch": 250,
-  "method_state": {
-    "alpha": 0.9833333333333393
-  }
-}

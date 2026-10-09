@@ -77,9 +77,8 @@ def _dataset_name(cfg: Dict[str, Any]) -> str:
 
 def _main_llm_name(cfg: Dict[str, Any]) -> str:
     main = cfg["main_llm"]
-    # display_name is used for experiment-folder/run naming when the same API
-    # model should appear under a stable, publication-facing name. The API call
-    # still uses model_name.
+
+
     return safe_name(main.get("display_name", main.get("model_name", main.get("provider", "main"))))
 
 
@@ -157,14 +156,7 @@ def _method_params(cfg: Dict[str, Any]) -> list[str]:
 
 
 def run_name_from_config(cfg: Dict[str, Any]) -> str:
-    """Build the method-run CSV/state stem.
 
-    Format:
-        {method}_{main_llm}_{dataset}_{budget variant}_{method params}
-
-    The number of batches is intentionally excluded, so a run can be extended
-    by increasing data.num_batches and rerunning without changing the output file.
-    """
     parts = [
         safe_name(str(cfg.get("method", "method")).lower().replace("-", "_")),
         _main_llm_name(cfg),
@@ -176,11 +168,7 @@ def run_name_from_config(cfg: Dict[str, Any]) -> str:
 
 
 def generation_cache_name(cfg: Dict[str, Any]) -> str:
-    """Build the shared main-LLM generation cache name.
 
-    This cache stores main-model generations keyed by example_id. It is
-    independent of the method, score model, number of batches, and budget.
-    """
     return f"gen_{_main_llm_name(cfg)}_{_dataset_name(cfg)}.csv"
 
 
@@ -222,13 +210,7 @@ def save_json_atomic(obj: Dict[str, Any], path: str | Path) -> None:
 
 
 def project_paths(cfg: Dict[str, Any]) -> Dict[str, Path]:
-    """Return standard project paths under outputs/{main_llm}_{dataset}/.
 
-    Optional output_subdir is only used to place deliberately separated
-    experiment runs in a different folder. It does not affect run names or
-    generation cache filenames, and existing configs without output_subdir keep
-    exactly the previous paths.
-    """
     out_root = ensure_dir(cfg.get("output_dir", "outputs"))
     model_data = model_data_name_from_config(cfg)
     output_subdir = cfg.get("output_subdir", None)

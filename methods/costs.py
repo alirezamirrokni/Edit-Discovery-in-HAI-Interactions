@@ -11,12 +11,7 @@ def _response_word_count(text: Any) -> int:
 
 
 def prepare_cost_context(gen_df: pd.DataFrame | None, variant: str) -> dict[str, float]:
-    """Prepare optional normalization constants for cost functions.
 
-    Existing cost variants are intentionally left unchanged. The review_length
-    cost is normalized by the median model-response word count in the available
-    generation cache so that a typical response has cost close to 1.0.
-    """
     if variant != "review_length":
         return {}
 

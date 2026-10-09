@@ -196,7 +196,6 @@ function renderSample() {
   renderDatasetList();
   updateProgress();
 
-  // Return each scrollable card to the top when navigating.
   el("questionText").scrollTop = 0;
   el("modelAnswer").scrollTop = 0;
   el("goldAnswer").scrollTop = 0;

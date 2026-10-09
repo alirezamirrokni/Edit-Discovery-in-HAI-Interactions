@@ -9,13 +9,7 @@ from .ours import OursSelection
 
 
 class OursRandomSelection:
-    """Ours-style online thresholding with random Uniform(0, 1) scores.
 
-    This baseline keeps the same alpha update and beta-threshold selection rule
-    used by OursSelection and OursLLMSelection. The only change is that the
-    per-row edit-probability score eta is sampled independently from
-    Uniform(0, 1), so no text representations or LLM scoring calls are used.
-    """
 
     needs_score_model = False
 
@@ -41,8 +35,7 @@ class OursRandomSelection:
         gamma = float(self.policy["alpha_step_size"])
         warm_start_batches = int(self.policy.get("warm_start_batches", 0))
 
-        # Separate deterministic streams for random scores and randomized
-        # budget/tie-breaking, so the random-score baseline is reproducible.
+
         rng = np.random.default_rng(self.seed + 1000003 * int(t))
         eta = self._score_batch(batch_df, t=t)
 

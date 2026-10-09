@@ -1,5 +1,0 @@
-{
-  "config": "llm_select_qwen-qwen3-32b_gpqa-train_main_n448_budget5_qwen-qwen3-32b_seed7",
-  "next_batch": 250,
-  "method_state": {}
-}

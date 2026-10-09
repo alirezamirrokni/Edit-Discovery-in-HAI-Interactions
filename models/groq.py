@@ -32,7 +32,7 @@ class GroqConfig:
 
 
 class GroqLLM:
-    """Groq-hosted main LLM under evaluation."""
+
 
     def __init__(self, cfg: Dict[str, Any]):
         try:

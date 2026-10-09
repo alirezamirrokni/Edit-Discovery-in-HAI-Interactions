@@ -1,7 +1,0 @@
-{
-  "config": "ours_random_qwen-qwen3-32b_math500-test_budget5_eps0p615_alpha0p1_seed7",
-  "next_batch": 250,
-  "method_state": {
-    "alpha": 0.8749999999999974
-  }
-}

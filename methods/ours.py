@@ -9,7 +9,7 @@ from utils import sigmoid
 
 
 class OursSelection:
-    """Our online risk- and budget-aware selection method."""
+
 
     needs_score_model = True
 
@@ -30,7 +30,7 @@ class OursSelection:
         self.theta = None if theta is None else np.array(theta, dtype=np.float32)
 
     def _ensure_theta(self, dim: int) -> None:
-        """Initialize theta once the feature dimension is known."""
+
         if self.theta is not None:
             return
 
@@ -48,7 +48,7 @@ class OursSelection:
 
     @staticmethod
     def _budgeted_random_selection(costs: np.ndarray, budget: float, rng: np.random.Generator) -> np.ndarray:
-        """Randomly select examples until the budget is exhausted."""
+
         n = len(costs)
         selected = np.zeros(n, dtype=int)
         spent = 0.0
@@ -74,17 +74,7 @@ class OursSelection:
         budget: float,
         rng: np.random.Generator,
     ) -> Tuple[np.ndarray, float]:
-        """Select high-score examples under the budget.
 
-        This implements the threshold policy with budget-feasible boundary
-        tie-breaking. The cold-start case is important: if all eta values are
-        equal, strict thresholding can select zero examples. Here, exact ties are
-        shuffled first and then filled up to the budget.
-
-        For constant costs, this is exactly top-budget selection by eta with
-        random tie-breaking. For non-constant costs, it ranks by
-        (eta - alpha) / cost among examples satisfying eta >= alpha.
-        """
         eta = np.asarray(eta, dtype=float)
         costs = np.asarray(costs, dtype=float)
 
@@ -95,20 +85,19 @@ class OursSelection:
         if n == 0 or budget <= 0:
             return selected, 0.0
 
-        # Only examples with eta >= alpha can lie above or on the threshold
-        # alpha + beta c for some beta >= 0.
+
         eligible = np.where((eta >= alpha) & (costs > 0))[0]
 
         if len(eligible) == 0:
             return selected, 0.0
 
-        # Shuffle first so exact equal scores are broken randomly.
+
         eligible = np.array(eligible, dtype=int)
         rng.shuffle(eligible)
 
         ratios = (eta[eligible] - alpha) / np.maximum(costs[eligible], 1e-12)
 
-        # Stable sort preserves the previous random order inside exact ties.
+
         order = eligible[np.argsort(-ratios, kind="mergesort")]
 
         for i in order:
@@ -120,7 +109,7 @@ class OursSelection:
         if selected.sum() == 0:
             return selected, 0.0
 
-        # Report a beta value consistent with the selected frontier.
+
         selected_idx = np.where(selected == 1)[0]
         beta = float(np.min((eta[selected_idx] - alpha) / np.maximum(costs[selected_idx], 1e-12)))
         beta = max(0.0, beta)

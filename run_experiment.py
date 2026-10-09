@@ -66,7 +66,7 @@ def _safe_div(num: float, den: float) -> float:
 
 
 def _normalize_filter_value(value: Any) -> str:
-    """Normalize metadata values used by shift-stream filters."""
+
     return str(value or "").strip().lower().replace("_", " ").replace("-", " ")
 
 
@@ -75,11 +75,7 @@ def _record_matches_phase_filter(
     phase_filter: Dict[str, Any],
     popularity_bounds: tuple[float, float] | None = None,
 ) -> bool:
-    """Return whether a record belongs to a configured distribution-shift phase.
 
-    Supported filters are intentionally small and explicit so regular configs keep
-    exactly the old sampling behavior unless ``data.shift_stream`` is present.
-    """
     if not phase_filter:
         return True
 
@@ -97,7 +93,7 @@ def _record_matches_phase_filter(
             popularity = float(rec.get("popularity"))
         except Exception:
             return False
-        # Upper endpoint is inclusive so the most popular / least popular item is kept.
+
         if not (lo <= popularity <= hi):
             return False
 
@@ -124,7 +120,7 @@ def _popularity_bounds(records: List[Dict[str, Any]], qlo: float, qhi: float) ->
 
 
 def sample_shift_batches(records: List[Dict[str, Any]], cfg: Dict[str, Any]) -> List[List[Dict[str, Any]]]:
-    """Sample an online stream whose distribution changes at configured phase edges."""
+
     data_cfg = cfg["data"]
     stream_cfg = data_cfg.get("shift_stream") or {}
     phases = stream_cfg.get("phases") or []
@@ -195,7 +191,7 @@ def sample_shift_batches(records: List[Dict[str, Any]], cfg: Dict[str, Any]) -> 
 
 
 def sample_batches(records: List[Dict[str, Any]], cfg: Dict[str, Any]) -> List[List[Dict[str, Any]]]:
-    """Sample online batches with replacement from the dataset pool."""
+
     if not records:
         raise RuntimeError("Dataset wrapper returned no records.")
 
@@ -257,7 +253,7 @@ def print_run_summary(df: pd.DataFrame) -> None:
 
 
 def apply_dataset_llm_defaults(cfg: Dict[str, Any], data_wrapper) -> None:
-    """Attach dataset-specific LLM defaults without storing prompts in YAML configs."""
+
     main_cfg = cfg.get("main_llm")
     if isinstance(main_cfg, dict) and not main_cfg.get("system_prompt"):
         prompt_getter = getattr(data_wrapper, "main_system_prompt", None)
@@ -274,12 +270,7 @@ def ensure_generations(
     cache_path: Path,
     allow_generate: bool = True,
 ) -> pd.DataFrame:
-    """Load or create the shared main-LLM generation cache.
 
-    The requested records may contain repeated example_ids because online batches
-    are sampled with replacement. The generation cache remains example-level, so
-    each unique example_id is generated at most once for a given main LLM/dataset.
-    """
     cache = read_csv_or_empty(cache_path, GEN_COLUMNS)
     if len(cache):
         cache = cache.drop_duplicates("example_id", keep="last")

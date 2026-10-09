@@ -78,19 +78,19 @@ def _choice_letter_from_answer(answer: Any, options: Sequence[str]) -> Optional[
     if not text:
         return None
 
-    # MMLU-Pro commonly stores the gold answer as a letter.
+
     m = re.fullmatch(r"\(?\s*([A-Z])\s*\)?", text, flags=re.IGNORECASE)
     if m:
         letter = m.group(1).upper()
         if letter in _CHOICE_LETTERS[: max(1, len(options))]:
             return letter
 
-    # Some processed versions store an integer index.
+
     letter = _choice_letter_from_index(text)
     if letter is not None and _CHOICE_LETTERS.index(letter) < len(options):
         return letter
 
-    # Last fallback: answer text exactly equals one option text after normalization.
+
     norm_answer = _normalize_text(text)
     for idx, opt in enumerate(options):
         if _normalize_text(opt) == norm_answer:
@@ -138,7 +138,7 @@ def extract_mmlupro_choice(text: str | None, num_options: int = 10) -> Optional[
             if cand in valid:
                 return cand
 
-    # Fallback: inspect the last nonempty line for a standalone option letter.
+
     lines = [ln.strip() for ln in s.splitlines() if ln.strip()]
     if lines:
         m = re.search(r"\b([A-Z])\b", lines[-1], flags=re.IGNORECASE)
@@ -157,7 +157,7 @@ def mmlupro_exact_match(pred_answer: str | None, gold_final: str | None) -> bool
 
 
 class MMLUProWrapper:
-    """Fixed-size MMLU-Pro subset with exact option-letter grading."""
+
 
     def __init__(self, cfg: Dict[str, Any]):
         self.cfg = cfg
@@ -252,8 +252,8 @@ class MMLUProWrapper:
                     "question": formatted_question,
                     "gold_answer": f"{gold_letter}. {gold_answer}",
                     "gold_final": gold_letter,
-                    # Extra metadata is ignored by normal runs but is used by
-                    # distribution-shift stream sampling when configured.
+
+
                     "category": str(category) if category else "unknown",
                     "source_index": int(source_idx),
                 }
@@ -263,9 +263,8 @@ class MMLUProWrapper:
 
     @staticmethod
     def parse_prediction(model_answer: str) -> str | None:
-        # Most MMLU-Pro examples have ten options, but this parser remains valid
-        # for examples with fewer choices because invalid letters are rejected by
-        # the exact-match check against the stored gold_final.
+
+
         return extract_mmlupro_choice(model_answer, num_options=10)
 
     @staticmethod

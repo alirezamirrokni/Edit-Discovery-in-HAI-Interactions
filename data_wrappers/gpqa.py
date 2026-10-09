@@ -106,13 +106,7 @@ def gpqa_exact_match(pred_answer: str | None, gold_final: str | None) -> bool:
 
 
 class GPQAWrapper:
-    """GPQA multiple-choice wrapper with deterministic answer-choice shuffling.
 
-    The canonical Hugging Face dataset uses rows with `Question`, `Correct Answer`,
-    and three `Incorrect Answer ...` columns. We deterministically shuffle the four
-    choices per source row so the correct answer is not always the same letter,
-    while keeping generation caches reproducible.
-    """
 
     def __init__(self, cfg: Dict[str, Any]):
         self.cfg = cfg
@@ -169,7 +163,7 @@ class GPQAWrapper:
                 if text:
                     incorrects.append(text)
         if len(incorrects) < 3:
-            # Robust fallback for alternate processed versions.
+
             options = row.get("options") or row.get("choices")
             if isinstance(options, (list, tuple)) and len(options) >= 4:
                 opts = [_clean_text(x) for x in options]

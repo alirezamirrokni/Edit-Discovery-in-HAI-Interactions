@@ -149,13 +149,7 @@ DEFAULT_SELECTOR_PROMPTS = {
 
 
 class LLMSelect:
-    """LLM-based budgeted batch selection baseline.
 
-    This baseline gives the whole batch to a selector LLM and asks it to select
-    a budget-feasible subset for review. We call it LLM-Select rather than
-    ActiveLLM because it is only a batch selection baseline, not a claim to
-    reproduce a specific prior method.
-    """
 
     needs_score_model = False
 
@@ -206,8 +200,7 @@ class LLMSelect:
             items=self._format_items(batch_df),
         )
 
-        # Minimal safety cap for providers with small TPM/request limits.
-        # This truncates only the tail of the final prompt sent to the selector LLM.
+
         max_prompt_chars = int(self.policy.get("max_prompt_chars", 8000))
         if max_prompt_chars > 0 and len(prompt) > max_prompt_chars:
             prompt = prompt[:max_prompt_chars].rstrip() + "\n\n[Prompt truncated due to input-size limit.]"
@@ -217,7 +210,7 @@ class LLMSelect:
     def _parse_indices(text: str) -> List[int]:
         text = str(text).strip()
 
-        # Preferred path: JSON object with selected_indices.
+
         try:
             obj = json.loads(text)
             if isinstance(obj, dict) and isinstance(obj.get("selected_indices"), list):
@@ -225,7 +218,7 @@ class LLMSelect:
         except Exception:
             pass
 
-        # Robust path: extract first JSON-looking object.
+
         m = re.search(r"\{.*\}", text, flags=re.DOTALL)
         if m:
             try:
@@ -235,7 +228,7 @@ class LLMSelect:
             except Exception:
                 pass
 
-        # Last-resort path: parse integers from the response.
+
         nums = re.findall(r"-?\d+", text)
         return [int(x) for x in nums]
 

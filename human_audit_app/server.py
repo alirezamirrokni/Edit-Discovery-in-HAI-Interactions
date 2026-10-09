@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
-"""Local human-verification web app for the 200-example audit set.
 
-Run from the repository root:
-    python run_human_audit.py
-
-The server intentionally uses only the Python standard library so it works with
-this repository's existing environment. Human annotations are atomically saved
-as CSV files under ./human_annotations/<annotator name>.csv.
-"""
 
 from __future__ import annotations
 
@@ -31,9 +23,7 @@ STATIC_DIR = APP_DIR / "static"
 SAMPLES_PATH = APP_DIR / "data" / "audit_samples_50.csv"
 ANNOTATIONS_DIR = REPO_DIR / "human_annotations"
 
-# Kept intentionally identical to the simulated-label CSV schema produced in
-# the earlier audit, so downstream analysis can load human and simulated files
-# with the same code. The values written here are explicitly human annotations.
+
 OUTPUT_COLUMNS = [
     "audit_id",
     "dataset",
@@ -87,13 +77,13 @@ SAMPLE_BY_ID = {row["audit_id"]: row for row in SAMPLES}
 
 
 def safe_annotator_name(raw: str) -> str:
-    """Return a display/file-safe name while preserving normal names verbatim."""
+
     name = re.sub(r"\s+", " ", _clean_text(raw)).strip()
     if not name:
         raise ValueError("Please enter your name.")
     if len(name) > 80:
         raise ValueError("Name must be 80 characters or fewer.")
-    # Prevent path traversal / platform-invalid filename characters.
+
     name = re.sub(r'[\\/:*?"<>|\x00-\x1f]', "_", name).strip(" .")
     if not name or name in {".", ".."}:
         raise ValueError("Please enter a valid name.")
@@ -108,7 +98,7 @@ def annotation_path(name: str) -> Path:
 def read_annotations(name: str) -> dict[str, dict[str, str]]:
     path = annotation_path(name)
     if not path.exists():
-        # Create the file immediately on login, as requested.
+
         atomic_write_annotations(path, {})
         return {}
 
@@ -125,7 +115,7 @@ def read_annotations(name: str) -> dict[str, dict[str, str]]:
 
 
 def atomic_write_annotations(path: Path, rows: dict[str, dict[str, str]]) -> None:
-    """Rewrite the annotator CSV atomically in canonical audit order."""
+
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
     with WRITE_LOCK:
@@ -243,7 +233,7 @@ class AuditHandler(BaseHTTPRequestHandler):
     server_version = "HumanAudit/1.0"
 
     def log_message(self, fmt: str, *args: Any) -> None:
-        # Keep terminal output compact but useful.
+
         print(f"[{self.log_date_time_string()}] {fmt % args}")
 
     def _json(self, payload: dict[str, Any], status: int = 200) -> None:
@@ -276,7 +266,7 @@ class AuditHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(content)
 
-    def do_GET(self) -> None:  # noqa: N802
+    def do_GET(self) -> None:
         parsed = urllib.parse.urlparse(self.path)
         if parsed.path == "/api/session":
             try:
@@ -322,7 +312,7 @@ class AuditHandler(BaseHTTPRequestHandler):
 
         self.send_error(HTTPStatus.NOT_FOUND)
 
-    def do_POST(self) -> None:  # noqa: N802
+    def do_POST(self) -> None:
         parsed = urllib.parse.urlparse(self.path)
         if parsed.path != "/api/annotation":
             self.send_error(HTTPStatus.NOT_FOUND)
@@ -338,7 +328,7 @@ class AuditHandler(BaseHTTPRequestHandler):
             self._json(save_annotation(payload))
         except (ValueError, json.JSONDecodeError) as exc:
             self._error(str(exc))
-        except Exception as exc:  # pragma: no cover - defensive server boundary
+        except Exception as exc:
             self._error(f"Could not save annotation: {exc}", status=500)
 
 

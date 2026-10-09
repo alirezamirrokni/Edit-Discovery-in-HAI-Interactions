@@ -1,7 +1,0 @@
-{
-  "config": "ours_random_openai-gpt-oss-20b_popqa-test_n500_seed42_budget5_eps0p035_alpha0p1_seed7",
-  "next_batch": 250,
-  "method_state": {
-    "alpha": 1.0016666666666652
-  }
-}

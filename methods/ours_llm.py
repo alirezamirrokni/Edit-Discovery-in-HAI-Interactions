@@ -151,12 +151,7 @@ DEFAULT_SCORE_PROMPTS = {
 
 
 class OursLLMSelection:
-    """EDIT thresholding with LLM-estimated edit probabilities.
 
-    This method keeps the same online alpha/beta thresholding rule as
-    OursSelection, but replaces the learned linear probe score with a direct
-    LLM estimate of \tilde{eta}(question, model_answer).
-    """
 
     needs_score_model = False
 
@@ -263,7 +258,7 @@ class OursLLMSelection:
             except Exception:
                 pass
 
-        # Last-resort fallback for responses such as `score: 0.82`.
+
         for number in re.findall(r"[-+]?(?:\d*\.\d+|\d+)(?:[eE][-+]?\d+)?", text):
             try:
                 return cls._coerce_score(number)

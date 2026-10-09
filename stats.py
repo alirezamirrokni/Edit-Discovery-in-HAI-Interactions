@@ -118,7 +118,7 @@ def read_accuracy(
     unique_examples: bool,
     stream_mode: bool = False,
 ) -> tuple[float, int, int, tuple[tuple[str, str, str, int], ...]]:
-    """Read A labels and return accuracy, counts, and an optional stream signature."""
+
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)
         if reader.fieldnames is None or "A" not in reader.fieldnames:
@@ -240,7 +240,7 @@ def collect_shift_accuracy(outputs_dir: Path) -> list[AccuracyResult]:
         if not matching_dirs:
             continue
 
-        # Prefer the directory with the largest complete run available.
+
         best: tuple[Path, float, int, int, tuple[tuple[str, str, str, int], ...]] | None = None
         complete_runs: list[tuple[Path, float, int, int, tuple[tuple[str, str, str, int], ...]]] = []
 
@@ -261,7 +261,7 @@ def collect_shift_accuracy(outputs_dir: Path) -> list[AccuracyResult]:
                     best = item
 
         if best is None:
-            # Fallback: report unique-cache accuracy if no run CSV is available.
+
             cache_candidates = [
                 p
                 for directory in matching_dirs
@@ -295,7 +295,7 @@ def collect_shift_accuracy(outputs_dir: Path) -> list[AccuracyResult]:
 
         path, accuracy, correct, total, signature = best
 
-        # Verify that other equally long method runs represent the same stream.
+
         for other_path, _, _, other_total, other_signature in complete_runs:
             if other_path == path or other_total != total:
                 continue
@@ -349,7 +349,7 @@ def print_main_table(results: Sequence[AccuracyResult], digits: int) -> None:
         print(
             f"\\rowcolor{{{ROW_COLORS[dataset]}}} "
             f"\\mbox{{{dataset}}} & {fmt(llama.accuracy if llama else None, digits)} "
-            f"& {fmt(qwen.accuracy if qwen else None, digits)} \\\\"  # prints \\
+            f"& {fmt(qwen.accuracy if qwen else None, digits)} \\\\"
         )
 
 
@@ -368,7 +368,7 @@ def print_shift_table(results: Sequence[AccuracyResult], digits: int) -> None:
         r = lookup.get(("distribution_shift", dataset, "Llama-3.3-70B"))
         print(
             f"\\rowcolor{{{ROW_COLORS[dataset]}}} "
-            f"{dataset} & {fmt(r.accuracy if r else None, digits)} \\\\"  # prints \\
+            f"{dataset} & {fmt(r.accuracy if r else None, digits)} \\\\"
         )
 
 

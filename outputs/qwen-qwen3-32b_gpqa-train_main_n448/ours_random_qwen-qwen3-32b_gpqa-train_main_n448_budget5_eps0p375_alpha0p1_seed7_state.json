@@ -1,7 +1,0 @@
-{
-  "config": "ours_random_qwen-qwen3-32b_gpqa-train_main_n448_budget5_eps0p375_alpha0p1_seed7",
-  "next_batch": 250,
-  "method_state": {
-    "alpha": 0.860833333333334
-  }
-}

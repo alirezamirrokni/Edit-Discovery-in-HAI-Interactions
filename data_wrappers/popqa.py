@@ -26,14 +26,7 @@ The final line must contain only the marker #### followed by the answer."""
 
 
 def normalize_popqa_answer(text: str | None) -> str:
-    """Normalize answers for PopQA-style exact match.
 
-    PopQA provides a list of acceptable gold answers in `possible_answers`.
-    We use the standard open-QA exact-match normalization: lowercase, remove
-    punctuation, remove English articles, and normalize whitespace. A model
-    prediction is correct if its normalized final answer exactly matches any
-    normalized gold alias.
-    """
     if text is None:
         return ""
 
@@ -67,9 +60,7 @@ def _maybe_parse_string_list(value: str) -> List[str]:
     if not text:
         return []
 
-    # Hugging Face discussions for PopQA note that `possible_answers` may be
-    # represented as a string in some versions. Accept JSON strings,
-    # Python-literal list strings, and a few simple delimited fallbacks.
+
     for parser in (json.loads, ast.literal_eval):
         try:
             obj = parser(text)
@@ -99,7 +90,7 @@ def _raw_aliases(row: Dict[str, Any]) -> List[str]:
         else:
             aliases.extend(_as_list(value))
 
-    # Robust fallbacks for alternate processed versions of the dataset.
+
     for key in (
         "answers",
         "answer",
@@ -116,7 +107,7 @@ def _raw_aliases(row: Dict[str, Any]) -> List[str]:
             else:
                 aliases.extend(_as_list(value))
 
-    # Preserve order while removing empty raw strings and duplicates.
+
     out: List[str] = []
     seen = set()
     for alias in aliases:
@@ -186,12 +177,7 @@ def popqa_exact_match(pred_answer: str | None, gold_final: Any) -> bool:
 
 
 def final_short_answer_from_text(text: str | None) -> Optional[str]:
-    """Extract the short answer from a generated PopQA response.
 
-    The generation prompt requests a final line of the form `#### <answer>`, but
-    this parser is intentionally tolerant of common LLM variants such as
-    `Final answer: ...` or a plain one-line answer.
-    """
     if text is None:
         return None
 
@@ -242,12 +228,7 @@ def _load_hf_dataset(hf_name: str, hf_config: Any, split: str):
 
 
 def _popularity_value(row: Dict[str, Any]) -> float:
-    """Return a numeric PopQA popularity proxy when available.
 
-    Higher values are treated as more popular. Missing/non-numeric values are
-    treated as -inf for head/mid/tail sampling and +inf by the legacy longtail
-    selector below.
-    """
     for key in ("s_pop", "subj_pop", "subject_popularity", "pageviews"):
         if key in row and row.get(key) is not None:
             try:
@@ -260,7 +241,7 @@ def _popularity_value(row: Dict[str, Any]) -> float:
 
 
 class PopQAWrapper:
-    """Fixed-size PopQA subset for exact-match open-domain QA experiments."""
+
 
     def __init__(self, cfg: Dict[str, Any]):
         self.cfg = cfg
@@ -296,8 +277,8 @@ class PopQAWrapper:
 
             scored.sort(key=lambda x: (x[0], x[1]))
             thirds = np.array_split(np.asarray([idx for _, idx in scored], dtype=int), 3)
-            # Order: low, mid, high in sorted popularity. Select equally from
-            # each third so later stream phases have stable source pools.
+
+
             base = self.subset_size // 3
             extras = self.subset_size % 3
             alloc = [base + (1 if i < extras else 0) for i in range(3)]
@@ -351,14 +332,14 @@ class PopQAWrapper:
 
             records.append(
                 {
-                    # Use the original split-row index as the cache key so the
-                    # selected examples remain traceable to the full PopQA split.
+
+
                     "example_id": int(source_idx),
                     "question": str(question),
                     "gold_answer": _answer_value(row),
                     "gold_final": encode_gold_aliases(aliases),
-                    # Extra metadata is ignored by normal runs but is used by
-                    # distribution-shift stream sampling when configured.
+
+
                     "popularity": _popularity_value(row),
                     "source_index": int(source_idx),
                 }

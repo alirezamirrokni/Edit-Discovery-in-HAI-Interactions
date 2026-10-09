@@ -155,7 +155,7 @@ def _method_and_epsilon_legends(
         for eps in eps_grid
     ]
 
-    # One line for all method/budget entries, one line for epsilon markers.
+
     first = fig.legend(
         handles=method_handles,
         loc="lower center",
@@ -349,7 +349,7 @@ def main() -> None:
         streams: dict[int, np.ndarray] = {}
         for seed in seeds:
             if seed == 7:
-                # Reuse the exact realized main-paper stream to avoid run-to-run inconsistency.
+
                 streams[seed] = stream_from_existing_run(edit_rep_main, pool)
             else:
                 streams[seed] = sample_stream(
@@ -357,8 +357,8 @@ def main() -> None:
                 )
 
         gamma = float(cfg["policy"]["alpha_step_size"])
-        # run_edit_rep_offline keeps the config's alpha/theta updates and only
-        # overrides epsilon/budget/seed for the sweep.
+
+
         total = len(seeds) * len(eps_grid) * len(budgets)
         step = 0
         for seed in seeds:

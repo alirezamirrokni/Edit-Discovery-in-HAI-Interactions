@@ -7,14 +7,7 @@ import numpy as np
 
 
 class MiniLMScoreModel:
-    """Local all-MiniLM-L6-v2 encoder used as frozen features for method='ours'.
 
-    This class intentionally matches the minimal interface expected by
-    OursSelection: encode_rows(rows) -> np.ndarray. It uses the Hugging Face
-    transformers version of sentence-transformers/all-MiniLM-L6-v2 and mean
-    pooling over the last hidden states, which is the standard sentence-transformer
-    pooling recipe for this model.
-    """
 
     def __init__(self, cfg: Dict[str, Any]):
         try:
