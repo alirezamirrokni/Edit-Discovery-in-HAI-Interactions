@@ -1,0 +1,24 @@
+method: llm_select
+seed: 7
+data:
+  name: gpqa
+  hf_config: gpqa_main
+  split: train
+  subset_size: 448
+  subset_seed: 42
+  batch_size: 10
+  num_batches: 250
+main_llm:
+  model: qwen/qwen3-32b
+  name: qwen3-32b
+  max_tokens: 1024
+  reasoning:
+    effort: none
+selector_llm:
+  model: qwen/qwen3-32b
+  name: qwen3-32b
+  max_tokens: 512
+  reasoning:
+    effort: none
+policy:
+  budget_per_batch: 5

@@ -1,0 +1,22 @@
+method: edit_llm
+seed: 7
+data:
+  name: gpqa
+  hf_config: gpqa_main
+  split: train
+  subset_size: 448
+  subset_seed: 42
+  batch_size: 10
+  num_batches: 250
+main_llm:
+  model: meta-llama/llama-3.3-70b-instruct
+  name: llama-3.3-70b-instruct
+  max_tokens: 1024
+selector_llm:
+  model: meta-llama/llama-3.3-70b-instruct
+  name: llama-3.3-70b-instruct
+  max_tokens: 64
+policy:
+  budget_per_batch: 5
+  epsilon: 0.505
+  alpha_step_size: 0.1

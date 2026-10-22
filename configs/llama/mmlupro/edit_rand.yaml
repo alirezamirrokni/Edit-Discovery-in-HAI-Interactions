@@ -1,0 +1,17 @@
+method: edit_rand
+seed: 7
+data:
+  name: mmlupro
+  split: test
+  subset_size: 500
+  subset_seed: 42
+  batch_size: 10
+  num_batches: 250
+main_llm:
+  model: meta-llama/llama-3.3-70b-instruct
+  name: llama-3.3-70b-instruct
+  max_tokens: 128
+policy:
+  budget_per_batch: 5
+  epsilon: 0.485
+  alpha_step_size: 0.1

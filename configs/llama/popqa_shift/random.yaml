@@ -1,0 +1,30 @@
+method: random
+seed: 7
+data:
+  name: popqa
+  split: test
+  subset_size: 600
+  subset_seed: 42
+  subset_strategy: popularity_balanced
+  tag: popshift
+  batch_size: 10
+  sample_seed: 42
+  shift_phases:
+  - name: Head
+    num_batches: 60
+    filter:
+      popularity_quantile: [0.667, 1.0]
+  - name: Middle
+    num_batches: 60
+    filter:
+      popularity_quantile: [0.333, 0.667]
+  - name: Long-tail
+    num_batches: 60
+    filter:
+      popularity_quantile: [0.0, 0.333]
+main_llm:
+  model: meta-llama/llama-3.3-70b-instruct
+  name: llama-3.3-70b-instruct
+  max_tokens: 128
+policy:
+  budget_per_batch: 5

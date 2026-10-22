@@ -1,12 +1,7 @@
 .env
 __pycache__/
 *.pyc
-figures/*
-!figures/.gitkeep
-.cache/
 .ipynb_checkpoints/
-
-paper_artifacts/
-
-human_annotations/*.csv
-!human_annotations/.gitkeep
+outputs/
+figures/
+audit/annotations/

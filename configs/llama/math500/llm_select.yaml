@@ -1,0 +1,17 @@
+method: llm_select
+seed: 7
+data:
+  name: math500
+  split: test
+  batch_size: 10
+  num_batches: 250
+main_llm:
+  model: meta-llama/llama-3.3-70b-instruct
+  name: llama-3.3-70b-instruct
+  max_tokens: 1024
+selector_llm:
+  model: meta-llama/llama-3.3-70b-instruct
+  name: llama-3.3-70b-instruct
+  max_tokens: 512
+policy:
+  budget_per_batch: 5

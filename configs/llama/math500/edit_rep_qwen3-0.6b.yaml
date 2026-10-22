@@ -1,0 +1,17 @@
+method: edit_rep
+seed: 7
+data:
+  name: math500
+  split: test
+  batch_size: 10
+  num_batches: 250
+main_llm:
+  model: meta-llama/llama-3.3-70b-instruct
+  name: llama-3.3-70b-instruct
+  max_tokens: 1024
+encoder: Qwen/Qwen3-0.6B
+policy:
+  budget_per_batch: 5
+  epsilon: 0.505
+  alpha_step_size: 0.1
+  theta_step_size: 1.0

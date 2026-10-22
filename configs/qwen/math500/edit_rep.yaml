@@ -1,0 +1,19 @@
+method: edit_rep
+seed: 7
+data:
+  name: math500
+  split: test
+  batch_size: 10
+  num_batches: 250
+main_llm:
+  model: qwen/qwen3-32b
+  name: qwen3-32b
+  max_tokens: 1024
+  reasoning:
+    effort: none
+encoder: sentence-transformers/all-MiniLM-L6-v2
+policy:
+  budget_per_batch: 5
+  epsilon: 0.615
+  alpha_step_size: 0.1
+  theta_step_size: 1.0

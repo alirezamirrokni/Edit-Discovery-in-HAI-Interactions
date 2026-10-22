@@ -1,0 +1,23 @@
+method: edit_llm
+seed: 7
+data:
+  name: math500
+  split: test
+  batch_size: 10
+  num_batches: 250
+main_llm:
+  model: qwen/qwen3-32b
+  name: qwen3-32b
+  max_tokens: 1024
+  reasoning:
+    effort: none
+selector_llm:
+  model: qwen/qwen3-32b
+  name: qwen3-32b
+  max_tokens: 64
+  reasoning:
+    effort: none
+policy:
+  budget_per_batch: 5
+  epsilon: 0.615
+  alpha_step_size: 0.1

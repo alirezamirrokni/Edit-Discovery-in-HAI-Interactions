@@ -1,0 +1,18 @@
+method: edit_rep
+seed: 7
+data:
+  name: math500
+  split: test
+  batch_size: 10
+  num_batches: 250
+main_llm:
+  model: meta-llama/llama-3.3-70b-instruct
+  name: llama-3.3-70b-instruct
+  max_tokens: 1024
+encoder: sentence-transformers/all-MiniLM-L6-v2
+policy:
+  budget_per_batch: 5
+  cost_variant: review_length
+  epsilon: 0.535
+  alpha_step_size: 0.1
+  theta_step_size: 1.0

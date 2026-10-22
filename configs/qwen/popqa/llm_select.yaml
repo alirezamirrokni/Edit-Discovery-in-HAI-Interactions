@@ -1,0 +1,24 @@
+method: llm_select
+seed: 7
+data:
+  name: popqa
+  split: test
+  subset_size: 500
+  subset_seed: 42
+  subset_strategy: random
+  batch_size: 10
+  num_batches: 250
+main_llm:
+  model: qwen/qwen3-32b
+  name: qwen3-32b
+  max_tokens: 128
+  reasoning:
+    effort: none
+selector_llm:
+  model: qwen/qwen3-32b
+  name: qwen3-32b
+  max_tokens: 512
+  reasoning:
+    effort: none
+policy:
+  budget_per_batch: 5

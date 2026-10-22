@@ -1,0 +1,19 @@
+method: edit_rand
+seed: 7
+data:
+  name: mmlupro
+  split: test
+  subset_size: 500
+  subset_seed: 42
+  batch_size: 10
+  num_batches: 250
+main_llm:
+  model: qwen/qwen3-32b
+  name: qwen3-32b
+  max_tokens: 128
+  reasoning:
+    effort: none
+policy:
+  budget_per_batch: 5
+  epsilon: 0.425
+  alpha_step_size: 0.1

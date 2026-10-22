@@ -1,0 +1,37 @@
+method: edit_rep
+seed: 7
+data:
+  name: mmlupro
+  split: test
+  subset_size: 600
+  subset_seed: 42
+  tag: multishift
+  batch_size: 10
+  sample_seed: 42
+  shift_phases:
+  - name: STEM
+    num_batches: 50
+    filter:
+      category_in: [math, physics, chemistry, engineering, computer science]
+  - name: Life/Health
+    num_batches: 50
+    filter:
+      category_in: [biology, health, psychology]
+  - name: Humanities/Social Science
+    num_batches: 50
+    filter:
+      category_in: [history, philosophy, economics, business]
+  - name: Law/Others
+    num_batches: 50
+    filter:
+      category_in: [law, other, others]
+main_llm:
+  model: meta-llama/llama-3.3-70b-instruct
+  name: llama-3.3-70b-instruct
+  max_tokens: 128
+encoder: sentence-transformers/all-MiniLM-L6-v2
+policy:
+  budget_per_batch: 5
+  epsilon: 0.445
+  alpha_step_size: 0.1
+  theta_step_size: 1.0
